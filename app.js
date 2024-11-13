@@ -22,26 +22,29 @@ const weekdays = [
   "Sunday",
 ];
 
-const giveaway = document.querySelector('.giveaway');
+const birth = new Date(2000,2,16,8,0,0);
+let yearCounter = 2025;
+
+const counter= document.querySelector('.counter');
 const deadline = document.querySelector('.deadline');
 const items = document.querySelectorAll('.deadline-format h4');
+let birthdaytext = document.querySelector('.information-text');
 
-const futureDate = new Date(2025, 2, 16, 8, 0, 0);
-
-const year = futureDate.getFullYear();
-const hours = futureDate.getHours();
-const minutes = futureDate.getMinutes();
-
-const month = months[futureDate.getMonth()];
-const date = futureDate.getDate();
-const weekday = weekdays[futureDate.getDay()];
-
-
-giveaway.textContent = `Birthday at ${weekday}, ${date} ${month} ${year} 0${hours}:0${minutes}am`;
-
-const futureTime = futureDate.getTime();
+let futureDate = new Date(yearCounter, 2, 16, 8, 0, 0);
 
 function getRemainingTime() { // 1s = 1000ms, 1m = 60s, 1h = 60m, 1d = 24h
+  const year = futureDate.getFullYear();
+  const hours = futureDate.getHours();
+  const minutes = futureDate.getMinutes();
+
+  const month = months[futureDate.getMonth()];
+  const date = futureDate.getDate();
+  const weekday = weekdays[futureDate.getDay()];
+  
+  counter.textContent = `Birthday at ${weekday}, ${date} ${month} ${year} 0${hours}:0${minutes}am`;
+
+  const futureTime = futureDate.getTime();
+  
   const today = new Date().getTime();
   const t = futureTime - today;
 
@@ -53,13 +56,13 @@ function getRemainingTime() { // 1s = 1000ms, 1m = 60s, 1h = 60m, 1d = 24h
 
   // calculate all values
   let days = Math.floor(t / oneDay);
-  let hours = Math.floor(t % oneDay / oneHour);
-  let minutes = Math.floor(t % oneHour / oneMinute);
+  let hourscalc = Math.floor(t % oneDay / oneHour);
+  let minutescalc = Math.floor(t % oneHour / oneMinute);
   let seconds = Math.floor(t % oneMinute / oneSecond);
-  console.log(`${days}:${hours}:${minutes}:${seconds}`);
+  console.log(`${days}:${hourscalc}:${minutescalc}:${seconds}`);
 
   // set values array
-  const values = [days, hours, minutes, seconds];
+  const values = [days, hourscalc, minutescalc, seconds];
 
   function format(item) {
     if (item < 10) {
@@ -71,11 +74,15 @@ function getRemainingTime() { // 1s = 1000ms, 1m = 60s, 1h = 60m, 1d = 24h
   items.forEach((item, index) => {
     item.innerHTML = format(values[index]);
   });
-  if (t < 0) {
-    clearInterval(countdown);
-    deadline.innerHTML = `<h1 class="expired">Hello there, unfortunately this birthday is past!</h1>`
-  }
+  birthdaytext.innerHTML = `<p>Counter of my ${futureDate.getFullYear() - birth.getFullYear()}th birthday. I hope I will be have a good year until my birthday.
+        Life is good, and I love coding :D</p>`
+  if (t <= 0) {
+    yearCounter += 1;
+    futureDate.setFullYear(yearCounter);
+  //deadline.innerHTML = `<h1 class="expired">Hello there, unfortunately this birthday is past!</h1>`
 }
+}
+
 // countdown
 let countdown = setInterval(getRemainingTime, 1000);
 getRemainingTime();
